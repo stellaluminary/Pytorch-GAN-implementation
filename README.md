@@ -15,7 +15,7 @@ Collection of PyTorch implementations of GAN Integration
 [https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix](Official Pytorch Code)
 
 
-
+[[Paper]](https://arxiv.org/abs/1511.05644) [[Code]](implementations/aae/aae.py)
 
 
 
