@@ -1,0 +1,32 @@
+Setting:
+  phase: train #train or test
+  gpu_ids: [0] # [0,1,2,3, ... etc]
+
+Path:
+  Data_train:
+  Data_test:
+
+  resume_state:
+  resume_model_dir:
+  log_file_path:
+  save_img:
+  checkpoint_dir:
+
+  pretrain_model_dir:
+  pretrain_res:
+
+Model_Param:
+  dataset_name:
+  model_name:
+
+Data_Param:
+  batch_size: 1
+  num_threads: 4
+
+Train:
+  n_epochs:
+  lr:
+
+Save:
+  save_img_iter:
+  print_iter:

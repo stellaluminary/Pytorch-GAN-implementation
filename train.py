@@ -1,0 +1,87 @@
+import argparse
+import torch
+import os
+from configs import options
+from data import create_dataset
+from models import create_model
+from utils import util
+import math
+import time
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--opt', '-o',
+                        dest="filename",
+                        metavar='FILE',
+                        help='path to the config file',
+                        default='configs/cyclegan.yaml')
+    args = parser.parse_args()
+    opt = options.parser(args)
+
+    # train from scratch OR resume training
+    if opt['Path']['resume_state']:  # resuming training
+        resume_state = torch.load(opt['Path']['resume_state'])
+    else:  # training from scratch
+        resume_state = None
+        util.mkdir(opt['Path']['log_file_path'])
+        util.mkdir(opt['Path']['resume_model'])
+        util.mkdir(opt['Path']['pretrain_model'])
+        util.mkdir_and_rename(opt['Path']['save_img'])
+        util.mkdir_and_rename(opt['Path']['checkpoint_dir'])
+
+    dataset = create_dataset(opt)
+    dataset_size = len(dataset)
+    dataset_iter_per_epoch = math.ceil(dataset_size / opt['Data_Param']['batch_size'])
+    print('The number of training images = %d' % dataset_size)
+    print('Training iter per epoch = %d' % dataset_iter_per_epoch)
+
+    model = create_model(opt)
+    model.print_networks()
+
+    if resume_state:
+        init_epoch = resume_state['epoch'] + 1
+        total_iters = resume_state['iter']
+        model.resume_networks(resume_state['epoch'])
+        model.resume_others(resume_state)
+    else:
+        init_epoch = 0
+        total_iters = 0
+        util.init_log_file(os.path.join(opt['Path']['log_file_path'], 'loss_file.txt'), model.loss_names)
+
+    for epoch in range(init_epoch, opt['Train']['n_epochs']):
+        start_time = time.time()
+
+        for idx, data in enumerate(dataset):
+            total_iters += opt['Data_Param']['batch_size']
+
+            # feed the dict data : data['A'] & data['B'] & each path
+            model.feed_data(data)
+            model.optimize_parameters()
+
+            # print the losses
+            if (idx+1) % opt['Save']['print_iter'] == 0:
+                losses = model.get_current_losses()
+                util.print_current_losses(os.path.join(opt['Path']['log_file_path'], 'loss_file.txt'),
+                                           epoch=epoch, epochs=opt['Train']['n_epochs'],
+                                          epoch_iter=idx, epoch_iters=dataset_iter_per_epoch,
+                                          total_iters=total_iters, losses=losses)
+
+            # get and save the result images
+            if (idx+1) % opt['Save']['save_img_iter'] == 0:
+                images = model.get_current_visuals()
+                vis_path = model.make_visual_dir(opt['Path']['save_img'])
+                util.save_current_imgs(images=images, save_dirs=vis_path, phase=opt['Setting']['phase'], 
+                                        id=idx, epoch=epoch, epoch_iter=(idx+1), min_max=(-1,1))
+
+        # update the learning rate based on schedulers
+        model.update_learning_rate()
+
+        # save networks and optimizers, schedulers
+        model.save_networks(epoch)
+        model.save_training_state(epoch=epoch, iter_step=total_iters)
+
+        # print the time consume in each epoch
+        util.print_time(epoch, start_time)
+
+if __name__ == '__main__':
+    main()
