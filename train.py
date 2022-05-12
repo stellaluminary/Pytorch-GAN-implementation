@@ -24,8 +24,8 @@ def main():
     else:  # training from scratch
         resume_state = None
         util.mkdir(opt['Path']['log_file_path'])
-        util.mkdir(opt['Path']['resume_model'])
-        util.mkdir(opt['Path']['pretrain_model'])
+        util.mkdir(opt['Path']['resume_model_dir'])
+        util.mkdir(opt['Path']['pretrain_model_dir'])
         util.mkdir_and_rename(opt['Path']['save_img'])
         util.mkdir_and_rename(opt['Path']['checkpoint_dir'])
 
@@ -63,7 +63,7 @@ def main():
                 losses = model.get_current_losses()
                 util.print_current_losses(os.path.join(opt['Path']['log_file_path'], 'loss_file.txt'),
                                            epoch=epoch, epochs=opt['Train']['n_epochs'],
-                                          epoch_iter=idx, epoch_iters=dataset_iter_per_epoch,
+                                          epoch_iter=idx+1, epoch_iters=dataset_iter_per_epoch,
                                           total_iters=total_iters, losses=losses)
 
             # get and save the result images

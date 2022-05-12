@@ -42,15 +42,10 @@ class BaseModel():
                 net.eval()
 
     def test(self):
-        """Forward function used in test time.
-
-        This function wraps <forward> function in no_grad() so we don't save intermediate steps for backprop
-        It also calls <compute_visuals> to produce additional visualization results
-        """
         with torch.no_grad():
             self.forward()
 
-    def load_network(self):
+    def load_pretrained_nets(self):
         epoch = util.extract_epoch(self.pretrain_dir)
 
         for name in self.model_names:

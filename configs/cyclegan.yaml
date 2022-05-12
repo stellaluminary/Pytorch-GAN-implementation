@@ -3,12 +3,12 @@ Setting:
   gpu_ids: [0] # [0,1,2,3, ... etc]
 
 Path:
-  Data_A_train: dataset/horse2zebra/trainA
-  Data_B_train: dataset/horse2zebra/trainB
-  Data_A_test: dataset/horse2zebra/testA
-  Data_B_test: dataset/horse2zebra/testB
+  Data_A_train: datasets/horse2zebra/trainA
+  Data_B_train: datasets/horse2zebra/trainB
+  Data_A_test: datasets/horse2zebra/testA
+  Data_B_test: datasets/horse2zebra/testB
 
-  resume_state: results/cyclegan/resume/epoch_12.state
+  resume_state: #results/cyclegan/resume/epoch_12.state
   resume_model_dir: results/cyclegan/resume
   log_file_path: results/cyclegan
   save_img: results/cyclegan/res_img

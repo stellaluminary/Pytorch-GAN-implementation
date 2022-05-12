@@ -45,7 +45,7 @@ class UnalignedDataset(torch.utils.data.Dataset):
         self.opt = opt
         self.phase = opt['Setting']['phase']
 
-        # trainA : horse, summer, trainB : zebra, winter
+        # ex) trainA : horse, summer / trainB : zebra, winter
         self.A_path = sorted(make_dataset(opt['Path']['Data_A_' + self.phase]))
         self.B_path = sorted(make_dataset(opt['Path']['Data_B_' + self.phase]))
         self.A_size = len(self.A_path)
@@ -60,7 +60,7 @@ class UnalignedDataset(torch.utils.data.Dataset):
         A_path = self.A_path[idx % self.A_size]
         if self.phase == 'train':
             B_path = self.B_path[np.random.randint(0,self.B_size-1)]
-        else:
+        elif self.phase == 'test':
             B_path = self.B_path[idx % self.B_size]
 
         A = Image.open(A_path).convert('RGB')

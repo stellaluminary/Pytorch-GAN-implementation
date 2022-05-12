@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 from torch.nn import init
 
-##############################
-#        Generator
-##############################
+#########################################
+#        CycleGAN Generator
+#########################################
 
 class ResnetBlock(nn.Module):
     def __init__(self, dim, padding_type=nn.ReflectionPad2d, norm_layer=nn.InstanceNorm2d):
@@ -86,9 +86,9 @@ class Resnet_Generator(nn.Module):
 # preds = model(x)
 # print(preds.shape)
 
-##############################
-#        Discriminator
-##############################
+#########################################
+#        CycleGAN Discriminator
+#########################################
 
 class Discriminator_Block(nn.Module):
     def __init__(self, in_channels, out_channels, stride, normalize=True):

@@ -26,7 +26,7 @@ def main():
 
     model = create_model(opt)
     model.print_networks()
-    model.load_network()
+    model.load_pretrained_nets()
     model.eval()
 
     for idx, data in enumerate(test_dataset):

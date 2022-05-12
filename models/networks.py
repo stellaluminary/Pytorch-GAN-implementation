@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import init
-import models.modules.arch as arch
+import models.modules.cyclegan_arch as arch1
 
 def init_weights(net, init_type='normal', init_gain=0.02):
     """Initialize network weights.
@@ -44,7 +44,7 @@ def define_G(opt, name, device=None):
     model_name = opt_net['model_name']
 
     if model_name == 'cyclegan':
-        netG = arch.Resnet_Generator(input_nc=opt_net['input_nc'],
+        netG = arch1.Resnet_Generator(input_nc=opt_net['input_nc'],
                                      output_nc=opt_net['output_nc'],
                                      ngf=64, norm_layer=nn.InstanceNorm2d,
                                      n_blocks=9, padding_mode='reflect')
@@ -69,7 +69,7 @@ def define_D(opt, name):
     model_name = opt_net['model_name']
 
     if model_name == 'cyclegan':
-        netD = arch.PatchGAN_Discriminator(in_channels=opt_net['input_nc'],
+        netD = arch1.PatchGAN_Discriminator(in_channels=opt_net['input_nc'],
                                            features=[64, 128, 256, 512],
                                            norm_layer=nn.InstanceNorm2d)
     else:
