@@ -1,6 +1,7 @@
 import torch.utils.data as data
 import torch
 from data.Unalign import UnalignedDataset
+from data.Single import SingleDataset
 
 def create_dataset(opt):
     data_loader = CustomDatasetDataLoader(opt)
@@ -10,7 +11,11 @@ def create_dataset(opt):
 class CustomDatasetDataLoader():
     def __init__(self, opt):
         self.opt = opt
-        self.dataset = UnalignedDataset(opt)
+        self.opt_param = self.opt['Model_Param']
+        if self.opt_param['model_name'] in ['cyclegan']:
+            self.dataset = UnalignedDataset(opt)
+        elif self.opt_param['model_name'] in ['dcgan', 'wgan', 'wgan-gp']:
+            self.dataset = SingleDataset(opt)
         print("dataset [%s] was created" % type(self.dataset).__name__)
 
         if self.opt['Setting']['phase'] == 'train':

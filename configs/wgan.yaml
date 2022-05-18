@@ -1,0 +1,47 @@
+Setting:
+  phase: train #train or test
+  gpu_ids: [0] # [0,1,2,3, ... etc]
+
+Path:
+  Data_train: datasets/celeba-dataset/img_align_celeba
+
+  resume_state: #results/wgan/resume/epoch_12.state
+  resume_model_dir: results/wgan/resume
+  log_file_path: results/wgan
+  save_img: results/wgan/res_img
+  checkpoint_dir: results/wgan/ckp
+
+  pretrain_model_dir: results/pretrain/wgan
+  pretrain_res: results/wgan/res_pretrain_img
+
+Transforms:
+  flip: False
+  rot: False
+  crop: False
+  resize: 128 # should be power of 2 & more than 4 (4,16,32,64,128 etc)
+
+Model_Param:
+  dataset_name: celeba
+  model_name: wgan
+  input_nc: 3
+  output_nc: 3
+  ngf: 64
+  ndf: 64
+  nz: 100
+  img_size: 128 # should be same with 'Transforms'-'resize'
+  init_type: normal # network initialize type
+  init_gain: 0.02 # std
+
+Data_Param:
+  batch_size: 256
+  num_threads: 4
+
+Train:
+  n_epochs: 20
+  lr: 0.00005 # original default 0.00005
+  n_critic: 5
+  clip_value: 0.01
+
+Save:
+  save_img_iter: 100
+  print_iter: 100

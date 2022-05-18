@@ -54,9 +54,9 @@ def main():
         for idx, data in enumerate(dataset):
             total_iters += opt['Data_Param']['batch_size']
 
-            # feed the dict data : data['A'] & data['B'] & each path
+            # feed the dict data : data & path
             model.feed_data(data)
-            model.optimize_parameters()
+            model.optimize_parameters(idx)
 
             # print the losses
             if (idx+1) % opt['Save']['print_iter'] == 0:

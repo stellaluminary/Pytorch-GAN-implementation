@@ -42,8 +42,7 @@ class BaseModel():
                 net.eval()
 
     def test(self):
-        with torch.no_grad():
-            self.forward()
+        pass
 
     def load_pretrained_nets(self):
         epoch = util.extract_epoch(self.pretrain_dir)

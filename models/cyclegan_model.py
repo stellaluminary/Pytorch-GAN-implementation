@@ -65,9 +65,11 @@ class CycleGANModel(BaseModel):
             2) list(netG_A.parameters(), netG_B.parameters())
             """
             self.optim_G = optim.Adam(params=itertools.chain(self.netG_AtoB.parameters(), self.netG_BtoA.parameters()),
-                                      lr=opt['Train']['lr'], betas=(opt['Train']['beta1'], 0.999))
+                                      lr=opt['Train']['lr'],
+                                      betas=(opt['Train']['beta1'], opt['Train']['beta2']))
             self.optim_D = optim.Adam(params=itertools.chain(self.netD_A.parameters(), self.netD_B.parameters()),
-                                      lr=opt['Train']['lr'], betas=(opt['Train']['beta1'], 0.999))
+                                      lr=opt['Train']['lr'],
+                                      betas=(opt['Train']['beta1'], opt['Train']['beta2']))
 
             self.optimizers.append(self.optim_G)
             self.optimizers.append(self.optim_D)
@@ -93,7 +95,7 @@ class CycleGANModel(BaseModel):
         self.fake_A = self.netG_BtoA(self.data_B)  # y: data_B -> F(y): netG_BtoA(y) = fake_A
         self.rec_B = self.netG_AtoB(self.fake_A)  # F(y): fake_A -> G(F(y)): netG_AtoB(F(y)) = rec_B ~ y
 
-    def optimize_parameters(self):
+    def optimize_parameters(self, idx):
 
         # ------ define fake_A, fake_B, reconstruction_A, reconstruction_B data ------
         self.forward()
@@ -161,3 +163,7 @@ class CycleGANModel(BaseModel):
     def lr_scheduler_lambda(self, epoch):
         return 1.0 - max(0, epoch + - self.opt['Train']['lr_init_n_epochs'] + 1) \
                / float(self.opt['Train']['lr_decay_n_epochs'] + 1)
+
+    def test(self):
+        with torch.no_grad():
+            self.forward()

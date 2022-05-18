@@ -52,8 +52,8 @@ class UnalignedDataset(torch.utils.data.Dataset):
         self.B_size = len(self.B_path)
         self.transform = tensor_transforms(opt)
 
-        print(self.phase + ' A dataset path is' + opt['Path']['Data_A_' + self.phase])
-        print(self.phase + ' B dataset path is' + opt['Path']['Data_B_' + self.phase])
+        print(self.phase + ' A dataset path is ' + opt['Path']['Data_A_' + self.phase])
+        print(self.phase + ' B dataset path is ' + opt['Path']['Data_B_' + self.phase])
 
     def __getitem__(self, idx):
 

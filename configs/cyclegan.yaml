@@ -20,7 +20,6 @@ Path:
 Transforms:
   flip: True
   rot: True
-  shuffle: True
   resize: 286
   crop: 256
 
@@ -46,6 +45,7 @@ Train:
   lr_init_n_epochs: 100
   lr_decay_n_epochs: 100
   beta1: 0.5
+  beta2: 0.999
   lr: 0.0002
   gan_loss_mode: lsgan
   pool_size: 50

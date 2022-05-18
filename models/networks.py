@@ -1,7 +1,10 @@
 import torch
 import torch.nn as nn
 from torch.nn import init
-import models.modules.cyclegan_arch as arch1
+import models.modules.cyclegan_arch as cyclegan_arch
+import models.modules.dcgan_arch as dcgan_arch
+import models.modules.wgan_arch as wgan_arch
+import models.modules.wgan_gp_arch as wgan_gp_arch
 
 def init_weights(net, init_type='normal', init_gain=0.02):
     """Initialize network weights.
@@ -14,7 +17,8 @@ def init_weights(net, init_type='normal', init_gain=0.02):
     """
     def init_func(m):  # define the initialization function
         classname = m.__class__.__name__
-        if hasattr(m, 'weight') and (classname.find('Conv') != -1 or classname.find('Linear') != -1):
+        if hasattr(m, 'weight') and (classname.find('Conv') != -1 or classname.find('Linear') != -1
+                                     or classname.find('ConvTranspose') != -1):
             if init_type == 'normal':
                 init.normal_(m.weight.data, 0.0, init_gain)
             elif init_type == 'xavier':
@@ -43,11 +47,20 @@ def define_G(opt, name, device=None):
     opt_net = opt['Model_Param']
     model_name = opt_net['model_name']
 
-    if model_name == 'cyclegan':
-        netG = arch1.Resnet_Generator(input_nc=opt_net['input_nc'],
-                                     output_nc=opt_net['output_nc'],
-                                     ngf=64, norm_layer=nn.InstanceNorm2d,
-                                     n_blocks=9, padding_mode='reflect')
+    if model_name in ['cyclegan']:
+        netG = cyclegan_arch.Resnet_Generator(input_nc=opt_net['input_nc'],
+                                              output_nc=opt_net['output_nc'],
+                                              ngf=opt_net['ngf'], norm_layer=nn.InstanceNorm2d,
+                                              n_blocks=9, padding_mode='reflect')
+    elif model_name in ['dcgan']:
+        netG = dcgan_arch.DCGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
+                                          ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+    elif model_name in ['wgan']:
+        netG = wgan_arch.WGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
+                                          ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+    elif model_name in ['wgan-gp']:
+        netG = wgan_gp_arch.WGAN_GP_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
+                                          ngf=opt_net['ngf'], img_size=opt_net['img_size'])
     else:
         raise NotImplementedError('Generator model [{:s}] not recognized'.format(model_name))
 
@@ -68,10 +81,19 @@ def define_D(opt, name):
     opt_net = opt['Model_Param']
     model_name = opt_net['model_name']
 
-    if model_name == 'cyclegan':
-        netD = arch1.PatchGAN_Discriminator(in_channels=opt_net['input_nc'],
-                                           features=[64, 128, 256, 512],
-                                           norm_layer=nn.InstanceNorm2d)
+    if model_name in ['cyclegan']:
+        netD = cyclegan_arch.PatchGAN_Discriminator(in_channels=opt_net['input_nc'],
+                                                    features=[64, 128, 256, 512],
+                                                    norm_layer=nn.InstanceNorm2d)
+    elif model_name in ['dcgan']:
+        netD = dcgan_arch.DCGAN_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
+                                              ndf=opt_net['ndf'], img_size=opt_net['img_size'])
+    elif model_name in ['wgan']:
+        netD = wgan_arch.WGAN_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
+                                              ndf=opt_net['ndf'], img_size=opt_net['img_size'])
+    elif model_name in ['wgan-gp']:
+        netD = wgan_gp_arch.WGAN_GP_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
+                                            ndf=opt_net['ndf'], img_size=opt_net['img_size'])
     else:
         raise NotImplementedError('Discriminator model [{:s}] not recognized'.format(model_name))
 

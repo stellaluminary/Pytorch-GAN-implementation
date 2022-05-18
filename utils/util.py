@@ -33,9 +33,9 @@ def print_current_losses(save_txt_path, epoch, epochs, epoch_iter, epoch_iters, 
         losses (OrderedDict) -- training losses stored in the format of (name, float) pairs,
                                 get from the model.get_current_losses()
     """
-    message = '(epoch: %d/%d, iters: %d/%d, total iters: %d) ' \
+    message = get_timestamp()+'(epoch: %d/%d, iters: %d/%d, total iters: %d) ' \
               % (epoch, epochs, epoch_iter, epoch_iters, total_iters)
-    txt_log_file = '%d, %d, %d' % (epoch, epoch_iter, total_iters)
+    txt_log_file = get_timestamp()+', %d, %d, %d' % (epoch, epoch_iter, total_iters)
     for k, v in losses.items():
         message += '%s: %.3f ' % (k, v)
         txt_log_file += ', %.3f' % (v)

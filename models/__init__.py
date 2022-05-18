@@ -7,6 +7,12 @@ def create_model(opt):
 
     if model == 'cyclegan':
         from .cyclegan_model import CycleGANModel as M
+    elif model == 'dcgan':
+        from .dcgan_model import DCGANModel as M
+    elif model == 'wgan':
+        from .wgan_model import WGANModel as M
+    elif model == 'wgan-gp':
+        from .wgan_gp_model import WGANGPModel as M
     else:
         raise NotImplementedError('Model [{:s}] not recognized.'.format(model))
 
