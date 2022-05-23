@@ -1,10 +1,6 @@
 import torch
 import torch.nn as nn
 from torch.nn import init
-import models.modules.cyclegan_arch as cyclegan_arch
-import models.modules.dcgan_arch as dcgan_arch
-import models.modules.wgan_arch as wgan_arch
-import models.modules.wgan_gp_arch as wgan_gp_arch
 
 def init_weights(net, init_type='normal', init_gain=0.02):
     """Initialize network weights.
@@ -48,19 +44,36 @@ def define_G(opt, name, device=None):
     model_name = opt_net['model_name']
 
     if model_name in ['cyclegan']:
-        netG = cyclegan_arch.Resnet_Generator(input_nc=opt_net['input_nc'],
+        from models.modules.cyclegan_arch import Resnet_Generator
+        netG = Resnet_Generator(input_nc=opt_net['input_nc'],
                                               output_nc=opt_net['output_nc'],
                                               ngf=opt_net['ngf'], norm_layer=nn.InstanceNorm2d,
                                               n_blocks=9, padding_mode='reflect')
     elif model_name in ['dcgan']:
-        netG = dcgan_arch.DCGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
+        from models.modules.dcgan_arch import DCGAN_Generator
+        netG = DCGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
                                           ngf=opt_net['ngf'], img_size=opt_net['img_size'])
     elif model_name in ['wgan']:
-        netG = wgan_arch.WGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
+        from models.modules.wgan_arch import WGAN_Generator
+        netG = WGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
                                           ngf=opt_net['ngf'], img_size=opt_net['img_size'])
     elif model_name in ['wgan-gp']:
-        netG = wgan_gp_arch.WGAN_GP_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
+        from models.modules.wgan_gp_arch import WGAN_GP_Generator
+        netG = WGAN_GP_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
                                           ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+    elif model_name in ['sngan']:
+        if opt_net['model_type'] == 'resblock':
+            from models.modules.sngan_res_arch import SNGAN_Generator
+            netG = SNGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
+                                                  ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+        elif opt_net['model_type'] == 'dcgan':
+            from models.modules.sngan_arch import SNGAN_Generator
+            netG = SNGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
+                                              ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+    elif model_name in ['sagan']:
+        from models.modules.sagan_arch import SAGAN_Generator
+        netG = SAGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
+                               ngf=opt_net['ngf'], img_size=opt_net['img_size'])
     else:
         raise NotImplementedError('Generator model [{:s}] not recognized'.format(model_name))
 
@@ -82,18 +95,35 @@ def define_D(opt, name):
     model_name = opt_net['model_name']
 
     if model_name in ['cyclegan']:
-        netD = cyclegan_arch.PatchGAN_Discriminator(in_channels=opt_net['input_nc'],
+        from models.modules.cyclegan_arch import PatchGAN_Discriminator
+        netD = PatchGAN_Discriminator(in_channels=opt_net['input_nc'],
                                                     features=[64, 128, 256, 512],
                                                     norm_layer=nn.InstanceNorm2d)
     elif model_name in ['dcgan']:
-        netD = dcgan_arch.DCGAN_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
+        from models.modules.dcgan_arch import DCGAN_Discriminator
+        netD = DCGAN_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
                                               ndf=opt_net['ndf'], img_size=opt_net['img_size'])
     elif model_name in ['wgan']:
-        netD = wgan_arch.WGAN_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
+        from models.modules.wgan_arch import WGAN_Discriminator
+        netD = WGAN_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
                                               ndf=opt_net['ndf'], img_size=opt_net['img_size'])
     elif model_name in ['wgan-gp']:
-        netD = wgan_gp_arch.WGAN_GP_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
+        from models.modules.wgan_gp_arch import WGAN_GP_Discriminator
+        netD = WGAN_GP_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
                                             ndf=opt_net['ndf'], img_size=opt_net['img_size'])
+    elif model_name in ['sngan']:
+            if opt_net['model_type'] == 'resblock':
+                from models.modules.sngan_res_arch import SNGAN_PorjectionDiscriminator
+                netD = SNGAN_PorjectionDiscriminator(in_ch=opt_net['input_nc'], out_ch=1,
+                                                     ndf=opt_net['ndf'], img_size=opt_net['img_size'])
+            elif opt_net['model_type'] == 'dcgan':
+                from models.modules.sngan_arch import SNGAN_Discriminator
+                netD = SNGAN_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
+                                           ndf=opt_net['ndf'], img_size=opt_net['img_size'])
+    elif model_name in ['sagan']:
+        from models.modules.sagan_arch import SAGAN_PorjectionDiscriminator
+        netD = SAGAN_PorjectionDiscriminator(in_ch=opt_net['input_nc'], out_ch=1,
+                                   ndf=opt_net['ndf'], img_size=opt_net['img_size'])
     else:
         raise NotImplementedError('Discriminator model [{:s}] not recognized'.format(model_name))
 

@@ -161,7 +161,7 @@ class CycleGANModel(BaseModel):
         self.optim_D.step()
 
     def lr_scheduler_lambda(self, epoch):
-        return 1.0 - max(0, epoch + - self.opt['Train']['lr_init_n_epochs'] + 1) \
+        return 1.0 - max(0, epoch - self.opt['Train']['lr_init_n_epochs'] + 1) \
                / float(self.opt['Train']['lr_decay_n_epochs'] + 1)
 
     def test(self):

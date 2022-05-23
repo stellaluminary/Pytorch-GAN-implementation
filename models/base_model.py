@@ -64,11 +64,11 @@ class BaseModel():
         return self.image_paths
 
     def update_learning_rate(self):
-        old_lr = self.optimizers[0].param_groups[0]['lr']
-        for scheduler in self.schedulers:
+        for e, scheduler in enumerate(self.schedulers):
+            old_lr = self.optimizers[e].param_groups[0]['lr']
             scheduler.step()
-        lr = self.optimizers[0].param_groups[0]['lr']
-        print('learning rate %.7f -> %.7f' % (old_lr, lr))
+            lr = self.optimizers[e].param_groups[0]['lr']
+            print('[%d] learning rate %.7f -> %.7f' % (e, old_lr, lr))
 
     def get_current_visuals(self):
         visual_ret = OrderedDict()

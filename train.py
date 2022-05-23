@@ -14,7 +14,7 @@ def main():
                         dest="filename",
                         metavar='FILE',
                         help='path to the config file',
-                        default='configs/cyclegan.yaml')
+                        default='configs/dcgan.yaml')
     args = parser.parse_args()
     opt = options.parser(args)
 
@@ -30,9 +30,9 @@ def main():
         util.mkdir_and_rename(opt['Path']['checkpoint_dir'])
 
     dataset = create_dataset(opt)
-    dataset_size = len(dataset)
-    dataset_iter_per_epoch = math.ceil(dataset_size / opt['Data_Param']['batch_size'])
-    print('The number of training images = %d' % dataset_size)
+    opt['dataset_size'] = len(dataset)
+    dataset_iter_per_epoch = math.ceil(opt['dataset_size'] / opt['Data_Param']['batch_size'])
+    print('The number of training images = %d' % opt['dataset_size'])
     print('Training iter per epoch = %d' % dataset_iter_per_epoch)
 
     model = create_model(opt)
@@ -71,7 +71,7 @@ def main():
                 images = model.get_current_visuals()
                 vis_path = model.make_visual_dir(opt['Path']['save_img'])
                 util.save_current_imgs(images=images, save_dirs=vis_path, phase=opt['Setting']['phase'], 
-                                        id=idx, epoch=epoch, epoch_iter=(idx+1), min_max=(-1,1))
+                                        id=idx, epoch=epoch, epoch_iter=(idx+1), min_max=(-1, 1))
 
         # update the learning rate based on schedulers
         model.update_learning_rate()

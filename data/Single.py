@@ -61,7 +61,7 @@ class SingleDataset(torch.utils.data.Dataset):
         if self.transform:
             A = self.transform(A)
 
-        noise = torch.randn(self.opt['Model_Param']['nz'], 1, 1)
+        noise = torch.randn(self.opt['Model_Param']['nz'])
 
         return {'A': A, 'A_paths': A_path, 'noise': noise}
 
