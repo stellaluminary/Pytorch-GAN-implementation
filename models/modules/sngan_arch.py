@@ -4,7 +4,7 @@ import math
 import torch.nn.functional as F
 
 #########################################
-#        DCGAN Generator
+#        SNGAN Generator
 #########################################
 
 class ConvTranspose_block(nn.Module):
@@ -53,7 +53,7 @@ class SNGAN_Generator(nn.Module):
 # print(preds.shape)
 
 #########################################
-#        DCGAN Discriminator
+#        SNGAN Discriminator
 #########################################
 
 class Conv_block(nn.Module):

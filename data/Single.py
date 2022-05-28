@@ -46,7 +46,7 @@ class SingleDataset(torch.utils.data.Dataset):
         self.opt = opt
         self.phase = opt['Setting']['phase']
 
-        # ex) train : celebA, MNIST
+        # ex) train : celebA
         self.A_path = sorted(make_dataset(opt['Path']['Data_' + self.phase]))
         self.A_size = len(self.A_path)
         self.transform = tensor_transforms(opt)

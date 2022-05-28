@@ -1,5 +1,6 @@
-import torch.nn as nn
 import math
+import torch
+import torch.nn as nn
 
 #########################################
 #        DCGAN Generator
@@ -24,6 +25,7 @@ class DCGAN_Generator(nn.Module):
     def __init__(self, nz=100, output_nc=3, ngf=64, img_size=128):
         super(DCGAN_Generator, self).__init__()
 
+        self.nz = nz
         ch = ngf * (img_size // 8)
         model = [ConvTranspose_block(in_ch=nz, out_ch=ch, kernel_size=4,
                                      stride=1, padding=0, bias=False)]
@@ -41,6 +43,7 @@ class DCGAN_Generator(nn.Module):
         self.model = nn.Sequential(*model)
 
     def forward(self, x):
+        x = x.view(-1, self.nz, 1, 1)
         return self.model(x)
 
 # x = torch.randn((5, 100, 1, 1))

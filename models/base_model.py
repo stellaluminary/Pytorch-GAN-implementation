@@ -20,6 +20,8 @@ class BaseModel():
         self.model_names = []
         self.visual_names = []
 
+        self.add_value_names=[]
+
         self.image_paths = []
 
         self.schedulers = []
@@ -92,6 +94,13 @@ class BaseModel():
                 errors_ret[name] = float(getattr(self, 'loss_' + name))
         return errors_ret
 
+    def get_current_add_values(self):
+        ordic = OrderedDict()
+        for name in self.add_value_names:
+            if isinstance(name, str):
+                ordic[name] = float(getattr(self, name))
+        return ordic
+
     def save_networks(self, epoch):
         for name in self.model_names:
             if isinstance(name, str):
@@ -106,14 +115,14 @@ class BaseModel():
                     state_dict[key] = param.cpu()
                 torch.save(state_dict, save_path)
 
-    def save_training_state(self, epoch, iter_step):
+    def save_training_state(self, epoch):
         '''Saves training state during training, which will be used for resuming'''
-        state = {'epoch': epoch, 'iter': iter_step, 'schedulers': [], 'optimizers': []}
+        state = {'epoch': epoch, 'schedulers': [], 'optimizers': []}
         for s in self.schedulers:
             state['schedulers'].append(s.state_dict())
         for o in self.optimizers:
             state['optimizers'].append(o.state_dict())
-        save_filename = 'epoch_{}.state'.format(epoch)
+        save_filename = '{}_epoch.state'.format(epoch)
         save_path = os.path.join(self.save_dir, save_filename)
         torch.save(state, save_path)
 

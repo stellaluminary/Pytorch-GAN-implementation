@@ -1,0 +1,53 @@
+Setting:
+  phase: train #train or test
+  gpu_ids: [0] # [0,1,2,3, ... etc]
+
+Path:
+  Data_train: datasets/128_crop # datasets/celeba-dataset/img_align_celeba
+
+  resume_state: #results/began/resume/epoch_12.state
+  resume_model_dir: results/began/resume
+  log_file_path: results/began
+  save_img: results/began/res_img
+  checkpoint_dir: results/began/ckp
+
+  pretrain_model_dir: results/pretrain/began
+  pretrain_res: results/began/res_pretrain_img
+
+Transforms:
+  flip: False
+  rot: False
+  crop: False
+  resize: 128 # should be power of 2 & more than 4 (4,16,32,64,128 etc)
+
+Model_Param:
+  dataset_name: celeba
+  model_name: began
+  input_nc: 3
+  output_nc: 3
+  ngf: 128
+  ndf: 128
+  nz: 64 # same as nh dimension. default 64
+  nh: 64 # same as noise dimension. default 64
+  img_size: 128 # should be same with 'Transforms'-'resize'
+  init_type: normal # network initialize type
+  init_gain: 0.02 # std
+
+Data_Param:
+  batch_size: 16
+  num_threads: 4
+
+Train:
+  n_epochs: 100
+  beta1: 0.5
+  beta2: 0.999
+  lr: 0.0001 # default 0.0001
+  lr_decay_iter: 5000
+  gamma: 0.5 # [0.7, 0.5, 0.3] high gamma makes diversities & artifacts. low gamma makes uniform face.
+  lambda_k: 0.001
+  k: 0
+
+
+Save:
+  save_img_iter: 100
+  print_iter: 100

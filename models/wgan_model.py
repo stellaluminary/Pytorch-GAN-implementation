@@ -12,7 +12,7 @@ class WGANModel(BaseModel):
         super(WGANModel, self).__init__(opt)
 
         # define fixed noise
-        self.fixed_noise = torch.randn(1, self.opt['Model_Param']['nz'], 1, 1).to(self.device)
+        self.fixed_noise = torch.randn(1, self.opt['Model_Param']['nz']).to(self.device)
         self.batch_size = self.opt['Data_Param']['batch_size']
 
         # define self.model_names for saving pth file
@@ -86,6 +86,6 @@ class WGANModel(BaseModel):
 
     def test(self):
 
-        self.fixed_noise2 = torch.randn(1, self.opt['Model_Param']['nz'], 1, 1).to(self.device)
+        self.fixed_noise2 = torch.randn(1, self.opt['Model_Param']['nz']).to(self.device)
         with torch.no_grad():
             self.fake = self.netG(self.fixed_noise2)

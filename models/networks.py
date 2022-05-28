@@ -52,24 +52,28 @@ def define_G(opt, name, device=None):
     elif model_name in ['dcgan']:
         from models.modules.dcgan_arch import DCGAN_Generator
         netG = DCGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
-                                          ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+                               ngf=opt_net['ngf'], img_size=opt_net['img_size'])
     elif model_name in ['wgan']:
         from models.modules.wgan_arch import WGAN_Generator
         netG = WGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
-                                          ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+                              ngf=opt_net['ngf'], img_size=opt_net['img_size'])
     elif model_name in ['wgan-gp']:
         from models.modules.wgan_gp_arch import WGAN_GP_Generator
         netG = WGAN_GP_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
-                                          ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+                                 ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+    elif model_name in ['began']:
+        from models.modules.began_arch import BEGAN_Decoder
+        netG = BEGAN_Decoder(hidden=opt_net['nh'], output_nc=opt_net['output_nc'],
+                                 ngf=opt_net['ngf'], img_size=opt_net['img_size'])
     elif model_name in ['sngan']:
         if opt_net['model_type'] == 'resblock':
             from models.modules.sngan_res_arch import SNGAN_Generator
             netG = SNGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
-                                                  ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+                                   ngf=opt_net['ngf'], img_size=opt_net['img_size'])
         elif opt_net['model_type'] == 'dcgan':
             from models.modules.sngan_arch import SNGAN_Generator
             netG = SNGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
-                                              ngf=opt_net['ngf'], img_size=opt_net['img_size'])
+                                   ngf=opt_net['ngf'], img_size=opt_net['img_size'])
     elif model_name in ['sagan']:
         from models.modules.sagan_arch import SAGAN_Generator
         netG = SAGAN_Generator(nz=opt_net['nz'], output_nc=opt_net['output_nc'],
@@ -111,6 +115,10 @@ def define_D(opt, name):
         from models.modules.wgan_gp_arch import WGAN_GP_Discriminator
         netD = WGAN_GP_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
                                             ndf=opt_net['ndf'], img_size=opt_net['img_size'])
+    elif model_name in ['began']:
+        from models.modules.began_arch import BEGAN_Discriminator
+        netD = BEGAN_Discriminator(in_ch=opt_net['input_nc'], hidden=opt_net['nh'], out_ch=opt_net['output_nc'],
+                                   ndf=opt_net['ndf'], ngf=opt_net['ngf'], img_size=opt_net['img_size'])
     elif model_name in ['sngan']:
             if opt_net['model_type'] == 'resblock':
                 from models.modules.sngan_res_arch import SNGAN_PorjectionDiscriminator
@@ -121,8 +129,8 @@ def define_D(opt, name):
                 netD = SNGAN_Discriminator(in_ch=opt_net['input_nc'], out_ch=1,
                                            ndf=opt_net['ndf'], img_size=opt_net['img_size'])
     elif model_name in ['sagan']:
-        from models.modules.sagan_arch import SAGAN_PorjectionDiscriminator
-        netD = SAGAN_PorjectionDiscriminator(in_ch=opt_net['input_nc'], out_ch=1,
+        from models.modules.sagan_arch import SAGAN_ProjectionDiscriminator
+        netD = SAGAN_ProjectionDiscriminator(in_ch=opt_net['input_nc'], out_ch=1,
                                    ndf=opt_net['ndf'], img_size=opt_net['img_size'])
     else:
         raise NotImplementedError('Discriminator model [{:s}] not recognized'.format(model_name))

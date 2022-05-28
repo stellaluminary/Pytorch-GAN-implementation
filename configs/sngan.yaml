@@ -5,7 +5,7 @@ Setting:
 Path:
   Data_train: datasets/celeba-dataset/img_align_celeba
 
-  resume_state: #results/sngan/resume/epoch_12.state
+  resume_state: #results/sngan/resume/epoch_11.state
   resume_model_dir: results/sngan/resume
   log_file_path: results/sngan
   save_img: results/sngan/res_img
@@ -23,7 +23,7 @@ Transforms:
 Model_Param:
   dataset_name: celeba
   model_name: sngan
-  model_type: resblock # dcgan or resblock
+  model_type: dcgan # dcgan or resblock
   input_nc: 3
   output_nc: 3
   ngf: 64

@@ -5,7 +5,7 @@ Setting:
 Path:
   Data_train: datasets/celeba-dataset/img_align_celeba
 
-  resume_state: #results/sagan/resume/epoch_12.state
+  resume_state: #results/sagan/resume/epoch_11.state
   resume_model_dir: results/sagan/resume
   log_file_path: results/sagan
   save_img: results/sagan/res_img

@@ -27,24 +27,33 @@ def mkdir_and_rename(path):
         os.rename(path, new_name)
     os.makedirs(path)
 
-def print_current_losses(save_txt_path, epoch, epochs, epoch_iter, epoch_iters, total_iters, losses):
+def print_current_losses(save_txt_path, epochs, iters, total_iters, losses, add_val):
     """
     Parameters:
         losses (OrderedDict) -- training losses stored in the format of (name, float) pairs,
                                 get from the model.get_current_losses()
     """
     message = get_timestamp()+'(epoch: %d/%d, iters: %d/%d, total iters: %d) ' \
-              % (epoch, epochs, epoch_iter, epoch_iters, total_iters)
-    txt_log_file = get_timestamp()+', %d, %d, %d' % (epoch, epoch_iter, total_iters)
+              % (epochs[0], epochs[1], iters[0], iters[1], total_iters)
+    txt_log_file = get_timestamp()+', %d, %d, %d' % (epochs[0], epochs[1], total_iters)
     for k, v in losses.items():
-        message += '%s: %.3f ' % (k, v)
+        message += 'loss %s: %.3f ' % (k, v)
         txt_log_file += ', %.3f' % (v)
+
+    for k, v in add_val.items():
+        if k == 'lr':
+            message += '%s: %.8f ' % (k, v)
+            txt_log_file += ', %.8f' % (v)
+        else:
+            message += '%s: %.3f ' % (k, v)
+            txt_log_file += ', %.3f' % (v)
+
     print(message)  # print the message
 
     with open(save_txt_path, "a") as log_file:
         log_file.write('%s\n' % txt_log_file)  # save the message
 
-def init_log_file(path, loss_name):
+def init_log_file(path, loss_name, add_val_name):
     if os.path.exists(path):
         new_name = path.split('.')[0] + '_' + get_timestamp() + '.txt'
         print('Txt File already exists. Rename it to [{:s}]'.format(new_name))
@@ -53,6 +62,10 @@ def init_log_file(path, loss_name):
     log_column = 'epoch, epoch_iter, total_iters'
     for i in loss_name:
         log_column += ', %s' % i
+
+    for i in add_val_name:
+        log_column += ', %s' % i
+
     with open(path, "w") as log_file:
         log_file.write('%s\n' % log_column)  # save the message
 
@@ -89,7 +102,7 @@ def tensor2img(tensor, out_type=np.uint8, min_max=(-1, 1)):
 def save_img(img, img_path, mode='RGB'):
     cv2.imwrite(img_path, img)
 
-def save_current_imgs(images, save_dirs, phase, id, epoch=0, epoch_iter=0, min_max=(-1, 1)):
+def save_current_imgs(images, save_dirs, phase, id, epoch=0, min_max=(-1, 1)):
     """
     Parameters:
         images (OrderedDict) -- training images stored in the format of (name, 3D tensor) pairs,
@@ -98,7 +111,7 @@ def save_current_imgs(images, save_dirs, phase, id, epoch=0, epoch_iter=0, min_m
     for i,(name, img_tensor) in enumerate(images.items()):
         img = tensor2img(img_tensor, min_max=min_max)
         if phase == 'train':
-            save_img_path = os.path.join(save_dirs[i], f'{name}_epoch_{epoch}_iter_{epoch_iter}.png')
+            save_img_path = os.path.join(save_dirs[i], f'{name}_epoch_{epoch}_iter_{id}.png')
         else:
             save_img_path = os.path.join(save_dirs[i], f'{name}_{id}.png')
         save_img(img, save_img_path)

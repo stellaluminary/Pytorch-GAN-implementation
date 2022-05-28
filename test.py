@@ -11,7 +11,7 @@ def main():
                         dest="filename",
                         metavar='FILE',
                         help='path to the config file',
-                        default='configs/dcgan.yaml')
+                        default='configs/began.yaml')
     args = parser.parse_args()
     opt = options.parser(args)
 

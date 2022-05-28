@@ -132,9 +132,9 @@ class ResBlock_Down(nn.Module):
 
         return out + skip_out
 
-class SAGAN_PorjectionDiscriminator(nn.Module):
+class SAGAN_ProjectionDiscriminator(nn.Module):
     def __init__(self, in_ch=3, out_ch=1, ndf=64, img_size=128):
-        super(SAGAN_PorjectionDiscriminator, self).__init__()
+        super(SAGAN_ProjectionDiscriminator, self).__init__()
 
         # assume ndf=64, img_size=128
         self.ndf = ndf
@@ -178,6 +178,6 @@ class SAGAN_PorjectionDiscriminator(nn.Module):
         return out
 
 # x = torch.randn((5, 3, 128, 128))
-# model = SAGAN_PorjectionDiscriminator()
+# model = SAGAN_ProjectionDiscriminator()
 # preds = model(x)
 # print(preds.shape)

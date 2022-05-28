@@ -16,10 +16,11 @@ class CustomDatasetDataLoader():
     def __init__(self, opt):
         self.opt = opt
         self.opt_param = self.opt['Model_Param']
-        if self.opt_param['model_name'] in ['cyclegan']:
-            self.dataset = UnalignedDataset(opt)
-        elif self.opt_param['model_name'] in ['dcgan', 'wgan', 'wgan-gp', 'sngan', 'sagan']:
+
+        if self.opt_param['dataset_name'] == 'celeba':
             self.dataset = SingleDataset(opt)
+        else:
+            self.dataset = UnalignedDataset(opt)
         print("dataset [%s] was created" % type(self.dataset).__name__)
 
         if self.opt['Setting']['phase'] == 'train':

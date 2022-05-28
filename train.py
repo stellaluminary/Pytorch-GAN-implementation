@@ -33,52 +33,53 @@ def main():
     opt['dataset_size'] = len(dataset)
     dataset_iter_per_epoch = math.ceil(opt['dataset_size'] / opt['Data_Param']['batch_size'])
     print('The number of training images = %d' % opt['dataset_size'])
-    print('Training iter per epoch = %d' % dataset_iter_per_epoch)
+    print('Training iterations per epoch = %d' % dataset_iter_per_epoch)
 
     model = create_model(opt)
     model.print_networks()
 
     if resume_state:
         init_epoch = resume_state['epoch'] + 1
-        total_iters = resume_state['iter']
+        total_iters = opt['dataset_size'] * resume_state['epoch']
         model.resume_networks(resume_state['epoch'])
         model.resume_others(resume_state)
     else:
         init_epoch = 0
         total_iters = 0
-        util.init_log_file(os.path.join(opt['Path']['log_file_path'], 'loss_file.txt'), model.loss_names)
+        util.init_log_file(os.path.join(opt['Path']['log_file_path'], 'loss_file.txt'),
+                           model.loss_names, model.add_value_names)
 
     for epoch in range(init_epoch, opt['Train']['n_epochs']):
         start_time = time.time()
-
         for idx, data in enumerate(dataset):
-            total_iters += opt['Data_Param']['batch_size']
+            total_iters += 1
 
             # feed the dict data : data & path
             model.feed_data(data)
-            model.optimize_parameters(idx)
+            model.optimize_parameters(total_iters)
 
-            # print the losses
+            # print & log the losses and values
             if (idx+1) % opt['Save']['print_iter'] == 0:
                 losses = model.get_current_losses()
+                add_val = model.get_current_add_values()
                 util.print_current_losses(os.path.join(opt['Path']['log_file_path'], 'loss_file.txt'),
-                                           epoch=epoch, epochs=opt['Train']['n_epochs'],
-                                          epoch_iter=idx+1, epoch_iters=dataset_iter_per_epoch,
-                                          total_iters=total_iters, losses=losses)
+                                          epochs=[epoch, opt['Train']['n_epochs']],
+                                          iters=[idx+1, dataset_iter_per_epoch], total_iters=total_iters,
+                                          losses=losses, add_val=add_val)
 
             # get and save the result images
             if (idx+1) % opt['Save']['save_img_iter'] == 0:
                 images = model.get_current_visuals()
                 vis_path = model.make_visual_dir(opt['Path']['save_img'])
                 util.save_current_imgs(images=images, save_dirs=vis_path, phase=opt['Setting']['phase'], 
-                                        id=idx, epoch=epoch, epoch_iter=(idx+1), min_max=(-1, 1))
+                                        id=idx+1, epoch=epoch, min_max=(-1, 1))
 
         # update the learning rate based on schedulers
         model.update_learning_rate()
 
         # save networks and optimizers, schedulers
         model.save_networks(epoch)
-        model.save_training_state(epoch=epoch, iter_step=total_iters)
+        model.save_training_state(epoch=epoch)
 
         # print the time consume in each epoch
         util.print_time(epoch, start_time)

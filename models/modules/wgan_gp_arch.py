@@ -4,7 +4,7 @@ from torch.nn import init
 import math
 
 #########################################
-#        DCGAN Generator
+#        WGAN_GP Generator
 #########################################
 
 class ConvTranspose_block(nn.Module):
@@ -26,6 +26,8 @@ class WGAN_GP_Generator(nn.Module):
     def __init__(self, nz=100, output_nc=3, ngf=64, img_size=128):
         super(WGAN_GP_Generator, self).__init__()
 
+        self.nz = nz
+
         ch = ngf * (img_size // 8)
         model = [ConvTranspose_block(in_ch=nz, out_ch=ch, kernel_size=4,
                                      stride=1, padding=0, bias=False)]
@@ -43,15 +45,16 @@ class WGAN_GP_Generator(nn.Module):
         self.model = nn.Sequential(*model)
 
     def forward(self, x):
+        x = x.view(-1, self.nz, 1, 1)
         return self.model(x)
 
-# x = torch.randn((5, 100, 1, 1))
-# model = DCGAN_Generator(img_size=128)
+# x = torch.randn((5, 100))
+# model = WGAN_GP_Generator(img_size=128)
 # preds = model(x)
 # print(preds.shape)
 
 #########################################
-#        DCGAN Discriminator
+#        WGAN-GP Discriminator
 #########################################
 
 class Conv_block(nn.Module):
@@ -98,6 +101,6 @@ class WGAN_GP_Discriminator(nn.Module):
 
 
 # x = torch.randn((5, 3, 128, 128))
-# model = DCGAN_Discriminator()
+# model = WGAN_GP_Discriminator()
 # preds = model(x)
 # print(preds.shape)
