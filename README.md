@@ -234,9 +234,9 @@ Almost 1 hour 40 minutes per 1 epoch with a Single 2060 RTX 6GB GPU.
 
 During the training, you will face the waterflow artifacts. But it will be disappear after 4~5 epochs.
 
-Even after 5 epochs training, you will fact the salt and pepper artifacts.
+Even after 5 epochs training, you will face the salt and pepper artifacts.
 
-After numerous of experiments, i conclude that this model acieve good results if strict constraints are followed.
+After numerous of experiments, i conclude that this model achieve good results if strict constraints are followed.
 
 ---
 
