@@ -228,7 +228,7 @@ $ python3 test.py --opt configs/began.yaml
 |:---:|
 |![](imgs/BEGAN_CelebA_result.png)|
 
-I spend a lot of time in BEGAN training becuase of diffulculty of BEGAN training.
+I spend a lot of time in BEGAN training becuase of difficulty of BEGAN training.
 
 Almost 1 hour 40 minutes per 1 epoch with a Single 2060 RTX 6GB GPU.
 
