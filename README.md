@@ -12,6 +12,7 @@ I've tried to replicate the original paper as closely as possible.
     + [DCGAN (2016 ICLR)](#dcgan)
     + [WGAN (2017 ICML)](#wgan)
     + [WGAN-GP (2017 NIPS)](#wgan-gp)
+    + [BEGAN (2017 arxiv)](#began)
     + [CycleGAN (2017 ICCV)](#cyclegan)      
     + [SNGAN (2018 ICLR)](#sngan)      
     + [SAGAN (2019 ICLR)](#sagan)      
@@ -125,6 +126,8 @@ $ python3 test.py --opt configs/wgan.yaml
 
 #### Results
 
+---
+
 ### WGAN-GP 
 
 <b>Title of Paper</b> : Improved Training of Wasserstein GANs
@@ -165,6 +168,71 @@ $ python3 test.py --opt configs/wgan_gp.yaml
 |:---:|
 |![](imgs/WGAN_GP_CelebA_result.png)|
 
+### BEGAN
+
+<b>Title of Paper</b> : BEGAN: Boundary Equilibrium Generative Adversarial Networks
+
+<b>Authors</b> : David Berthelot, Thomas Schumm, Luke Metz
+
+[[Arxiv]](https://arxiv.org/abs/1703.10717) (2017 Arxiv)
+
+[[Reference Code]-Pytorch](https://github.com/sunshineatnoon/Paper-Implementations/tree/master/BEGAN)
+
+
+#### Preprocessing
+
+Unlike other models, recommend to preprocess the celebA dataset before training.
+
+If you don't preprocess, there are a lot of artifacts results.
+
+[Originated Code File](https://github.com/hmi88/BEGAN-tensorflow/tree/master/Data)
+
+Before run face_detect.py, please check the path of CelebA dataset in the code.
+
+```
+$ python3 datasets/face_detect.py
+```
+
+
+#### Train
+
+To train from the scratch, check the configs/began.yaml file for confirming the location of Path.
+
+After checking, type the below command.
+
+```
+$ python3 train.py --opt configs/began.yaml
+```
+
+#### Test
+
+To test the code with the pretrained models, 
+
+1) Check the configs/began.yaml file for confirming the location of pretrained model pt/pth file. 
+
+2) Place the pth/pt file in pretrain_model_dir path of configs/began.yaml file. 
+
+3) Type the below command.
+
+```
+$ python3 test.py --opt configs/began.yaml
+```
+
+#### Results
+
+|BEGAN (Epoch 5) - gamma 0.5, lr decay every 5000 iterations|
+|:---:|
+|![](imgs/BEGAN_CelebA_result.png)|
+
+I spend a lot of time in BEGAN training becuase of diffulculty of BEGAN training.
+
+Almost 1 hour 40 minutes per 1 epoch with a Single 2060 RTX 6GB GPU.
+
+During the training, you will face the waterflow artifacts. But it will be disappear after 4~5 epochs.
+
+Even after 5 epochs training, you will fact the salt and pepper artifacts.
+
+After numerous of experiments, i conclude that this model acieve good results if strict constraints are followed.
 
 ### CycleGAN 
 
@@ -349,7 +417,7 @@ $ python3 test.py --opt configs/sagan.yaml
 
 |SAGAN  (Epoch )|
 |:---:|
-|![](imgs/.png)|
+|![](imgs/SAGAN_CelebA_result.png)|
 
 SNGAN is the backbone of SAGAN. However, there are some modifications so check the details in the SAGAN paper.
 
