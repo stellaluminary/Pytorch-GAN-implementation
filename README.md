@@ -1,5 +1,5 @@
 # Pytorch-GAN-implementation
-GAN implementations based on PyTorch.
+PyTorch Version of GAN implementations.
 
 I've tried to replicate the original paper as closely as possible. 
 
@@ -13,11 +13,13 @@ I've tried to replicate the original paper as closely as possible.
     + [WGAN (2017 ICML)](#wgan)
     + [WGAN-GP (2017 NIPS)](#wgan-gp)
     + [CycleGAN (2017 ICCV)](#cyclegan)      
+    + [SNGAN (2018 ICLR)](#sngan)      
+    + [SAGAN (2019 ICLR)](#sagan)      
 
 
 ## Overview
 
-Folder explanation
+Folder explanations
 
 ```
 .
@@ -42,6 +44,19 @@ Folder explanation
       + torchvision>=0.5.0
       + numpy
       + yaml
+      + 
+
+      
+ * Experiment Dataset
+      + CelebA Dataset (Resize 128x128)
+      
+       DCGAN, WGAN, WGAN-GP, SNGAN, SAGAN
+       
+      + Horse2Zebra Dataset (Resize 256)
+      
+       CycleGAN
+     
+
 
 ## Implementations
 
@@ -90,6 +105,12 @@ $ python3 test.py --opt configs/dcgan.yaml
 
 [[Offical Paper]](http://proceedings.mlr.press/v70/arjovsky17a/arjovsky17a.pdf) [[Arxiv]](https://arxiv.org/abs/1701.07875) (2017 ICML)
 
+#### Before train the model. Read
+
+WGAN is not working well. It's unstable to train.
+
+I prefer to run WGAN-GP Model instead of WGAN
+
 #### Train
 
 ```
@@ -112,15 +133,27 @@ $ python3 test.py --opt configs/wgan.yaml
 
 [[Offical Paper]](https://papers.nips.cc/paper/2017/hash/892c3b1c6dccd52936e27cbd0ff683d6-Abstract.html) [[Arxiv]](https://arxiv.org/abs/1704.00028) (2017 NIPS)
 
-[[Official Pytorch Code]-Tensorflow](https://github.com/igul222/improved_wgan_training)
+[[Official Code]-Tensorflow](https://github.com/igul222/improved_wgan_training)
 
 #### Train
+
+To train from the scratch, check the configs/wgan_gp.yaml file for confirming the location of Path.
+
+After checking, type the below command.
 
 ```
 $ python3 train.py --opt configs/wgan_gp.yaml
 ```
 
 #### Test
+
+To test the code with the pretrained models, 
+
+1) Check the configs/wgan_gp.yaml file for confirming the location of pretrained model pt/pth file. 
+
+2) Place the pth/pt file in pretrain_model_dir path of configs/wgan_gp.yaml file. 
+
+3) Type the below command.
 
 ```
 $ python3 test.py --opt configs/wgan_gp.yaml
@@ -141,7 +174,7 @@ $ python3 test.py --opt configs/wgan_gp.yaml
 
 [[Offical Paper]](https://openaccess.thecvf.com/content_ICCV_2017/papers/Zhu_Unpaired_Image-To-Image_Translation_ICCV_2017_paper.pdf) [[Arxiv]](https://arxiv.org/abs/1703.10593) (2017 ICCV)
 
-[[Official Pytorch Code]- Pytorch](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) 
+[[Official Code]- Pytorch](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) 
 
 #### Datasets
 
@@ -226,17 +259,99 @@ The model was trained on A:Horse <-> B:Zebra dataset.
 |![](imgs/CycleGAN_ZHZ_result.png)|
 |Epoch 160|
 
-In my experience, 4GB per one batch size.
+In my experience, 4GB GPU RAM is needed per one batch size.
 
 In the paper, there are 200 epochs.
 
 With a NVIDIA RTX 2060, consume approximately 12 minutes per one epoch. (40 hours for 200 epochs)
 
-#### Acknowledge
+### SNGAN
 
-Code is implemented based on the paper and Official Pytorch Code version of CycleGAN. 
+<b>Title of Paper</b> : Spectral Normalization for Generative Adversarial Networks
 
-All credits goes to the authos of CycleGAN.
+<b>Authors</b> : Takeru Miyato, Toshiki Kataoka, Masanori Koyama, Yuichi Yoshida
+
+[[Offical Paper]](https://openreview.net/pdf?id=B1QRgziT-) [[Arxiv]](https://arxiv.org/abs/1802.05957) (2018 ICLR)
+
+[[Official Code]](https://github.com/pfnet-research/sngan_projection)
+
+#### Train
+
+To train from the scratch, check the configs/sngan.yaml file for confirming the location of Path.
+
+After checking, type the below command.
+
+```
+$ python3 train.py --opt configs/sngan.yaml
+```
+
+#### Test
+
+To test the code with the pretrained models, 
+
+1) Check the configs/sngan.yaml file for confirming the location of pretrained model pt/pth file. 
+
+2) Place the pth/pt file in pretrain_model_dir path of configs/sngan.yaml file. 
+
+3) Type the below command.
+
+```
+$ python3 test.py --opt configs/sngan.yaml
+```
+
+#### Results
+
+|SNGAN - DCGAN Style (Epoch 19)|
+|:---:|
+|![](imgs/SNGAN_DCGAN_CelebA_result.png)|
+
+|SNGAN - Resblock Style(Projection Discriminator) (Epoch 15)|
+|:---:|
+|![](imgs/SNGAN_Resblock_CelebA_result.png)|
+
+In my experiment, to run the resblock style of SNGAN, i recommend to set beta1=0, beta2=0.9 for Adam, 5 discriminator update per 1 generator update. Unless, resnet model of SNGAN is hard to train and unstable.
+
+### SAGAN 
+
+<b>Title of Paper</b> : Self-Attention Generative Adversarial Networks
+
+<b>Authors</b> : Han Zhang, Ian Goodfellow, Dimitris Metaxas, Augustus Odena
+
+[[Offical Paper]](http://proceedings.mlr.press/v97/zhang19d/zhang19d.pdf) [[Arxiv]](https://arxiv.org/abs/1805.08318) (2019 ICLR)
+
+[[Official Code]-Tensorflow 1.5](https://github.com/brain-research/self-attention-gan)
+
+#### Train
+
+To train from the scratch, check the configs/sagan.yaml file for confirming the location of Path.
+
+After checking, type the below command.
+
+```
+$ python3 train.py --opt configs/sagan.yaml
+```
+
+#### Test
+
+To test the code with the pretrained models, 
+
+1) Check the configs/sagan.yaml file for confirming the location of pretrained model pt/pth file. 
+
+2) Place the pth/pt file in pretrain_model_dir path of configs/sagan.yaml file. 
+
+3) Type the below command.
+
+```
+$ python3 test.py --opt configs/sagan.yaml
+```
+
+#### Results
+
+|SAGAN  (Epoch )|
+|:---:|
+|![](imgs/.png)|
+
+SNGAN is the backbone of SAGAN. However, there are some modifications so check the details in the SAGAN paper.
 
 ## License
 
